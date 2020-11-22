@@ -1,13 +1,12 @@
 import { Button, Card, CardActions, CardContent, CircularProgress, colors, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles({
     root: {
         minWidth: 275,
         maxWidth:500,
         backgroundColor:"#97A7B3",
-        // backgroundColor:"#0298D4",
     },
     body: {
         fontStyle:"italic",
@@ -30,15 +29,19 @@ const QuoteCard = () => {
         .then(response => response.json())
         .then(data => {
             setQuoteInfo({
-                status:"done",
+                loading:false,
                 quote:data.value,
             })
         })
     }
 
+    //useEffect to get a new jokes on app load
+    useEffect(getNewQuote,[]);
+
+    //setting state
     const [quoteInfo,setQuoteInfo] = useState({
-        loading:false,
-        quote:"Chuck Norris can kill you with a headshot using a shotgun from across the map on call of duty."
+        loading:true,
+        quote:""
     })
     
     const classes = useStyles();

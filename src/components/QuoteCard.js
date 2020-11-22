@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, colors, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, CircularProgress, colors, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useState } from 'react';
 
@@ -12,12 +12,34 @@ const useStyles = makeStyles({
     body: {
         fontStyle:"italic",
     },
+    cardactionsRoot:{
+        justifyContent:"center",
+    }
 
 });
 
 const QuoteCard = () => {
 
-    const [quote,setQuote] = useState("Chuck Norris can kill you with a headshot using a shotgun from across the map on call of duty.")
+    const getNewQuote = () => {
+        const URL = "https://api.chucknorris.io/jokes/random";
+    
+        //Set state to loading
+        setQuoteInfo({loading:true});
+    
+        fetch(URL)
+        .then(response => response.json())
+        .then(data => {
+            setQuoteInfo({
+                status:"done",
+                quote:data.value,
+            })
+        })
+    }
+
+    const [quoteInfo,setQuoteInfo] = useState({
+        loading:false,
+        quote:"Chuck Norris can kill you with a headshot using a shotgun from across the map on call of duty."
+    })
     
     const classes = useStyles();
 
@@ -25,15 +47,21 @@ const QuoteCard = () => {
         <Card className={classes.root}>
             <CardContent>
                 
-                <Typography className={classes.body} variant="body1" component="p">
-                    "{quote}"
-                </Typography>
+                {
+                    quoteInfo.loading ? 
+                        <CircularProgress /> 
+                    :
+                    <Typography className={classes.body} variant="body1" component="p">
+                        "{quoteInfo.quote}"
+                    </Typography>
+
+                }
 
             </CardContent>
 
 
-        <CardActions>
-            <Button size="large" color={colors.red.A700} variant="contained">Learn More</Button>
+        <CardActions classes={{root:classes.cardactionsRoot}}>
+            <Button size="small" color="primary" variant="contained" onClick={getNewQuote}>Get another one</Button>
         </CardActions>
 
         </Card>
